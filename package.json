@@ -1,0 +1,31 @@
+{
+  "name": "palm-bot",
+  "version": "1.0.0",
+  "description": "PaLM Discord Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/razanfawwaz/palm-bot.git"
+  },
+  "keywords": [
+    "PaLM",
+    "Discord",
+    "Discord",
+    "Bot"
+  ],
+  "author": "Muhammad Razan Fawwaz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/razanfawwaz/palm-bot/issues"
+  },
+  "homepage": "https://github.com/razanfawwaz/palm-bot#readme",
+  "dependencies": {
+    "@google-ai/generativelanguage": "^1.1.0",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "google-auth-library": "^9.2.0"
+  }
+}

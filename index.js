@@ -1,9 +1,12 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits } = require("discord.js");
-const { DiscussServiceClient } = require("@google-ai/generativelanguage");
-const { GoogleAuth } = require("google-auth-library");
+const {
+  GoogleGenerativeAI,
+  HarmCategory,
+  HarmBlockThreshold,
+} = require("@google/generative-ai");
 
-const MODEL_NAME = "models/chat-bison-001";
+const MODEL_NAME = "gemini-pro";
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -12,9 +15,7 @@ const client = new Client({
   ],
 });
 
-const palmClient = new DiscussServiceClient({
-  authClient: new GoogleAuth().fromAPIKey(process.env.PALM_API_KEY),
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 client.on("ready", () => {
   console.log("Bot is ready!");
@@ -27,16 +28,37 @@ client.on("messageCreate", async (message) => {
     const userMessage = message.content
       .replace(`<@!${client.user.id}>`, "")
       .trim();
-    const response = await palmClient.generateMessage({
-      model: MODEL_NAME,
-      temperature: 0.5,
-      candidateCount: 1,
-      prompt: {
-        messages: [{ content: userMessage }],
-      },
-    });
-    const reply = response[0].candidates[0].content;
+    // const response = await palmClient.generateMessage({
+    //   model: MODEL_NAME,
+    //   temperature: 0.5,
+    //   candidateCount: 1,
+    //   prompt: {
+    //     messages: [{ content: userMessage }],
+    //   },
+    // });
+    // const reply = response[0].candidates[0].content;
 
+    const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+
+    const generationConfig = {
+      temperature: 0.9,
+      topK: 1,
+      topP: 1,
+      maxOutputTokens: 2048,
+    };
+
+    const parts = [
+      {
+        text: `input: ${userMessage}`,
+      },
+    ];
+
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts }],
+      generationConfig,
+    });
+
+    const reply = await result.response.text();
     // due to Discord limitations, we can only send 2000 characters at a time, so we need to split the message
     if (reply.length > 2000) {
       const replyArray = reply.match(/[\s\S]{1,2000}/g);

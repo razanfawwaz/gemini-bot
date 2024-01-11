@@ -1,10 +1,6 @@
 require("dotenv").config();
 const { Client, GatewayIntentBits } = require("discord.js");
-const {
-  GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} = require("@google/generative-ai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const MODEL_NAME = "gemini-pro";
 const client = new Client({
@@ -28,15 +24,6 @@ client.on("messageCreate", async (message) => {
     const userMessage = message.content
       .replace(`<@!${client.user.id}>`, "")
       .trim();
-    // const response = await palmClient.generateMessage({
-    //   model: MODEL_NAME,
-    //   temperature: 0.5,
-    //   candidateCount: 1,
-    //   prompt: {
-    //     messages: [{ content: userMessage }],
-    //   },
-    // });
-    // const reply = response[0].candidates[0].content;
 
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
